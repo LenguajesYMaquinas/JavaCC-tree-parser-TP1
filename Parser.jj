@@ -1,0 +1,131 @@
+PARSER_BEGIN(Parser)
+
+// Main class.
+class Parser {
+
+	// Define a list to save the sons of the nodes declared to check in later node definitions if
+	// they were already declared as sons.
+    public static java.util.ArrayList<String> nodes = new java.util.ArrayList<String >();
+    
+	// Define a node counter.
+    public static int nodeCount = 0;
+
+    // Define a variable to check at the end if the program is correct.
+    public static boolean check = true;
+
+  	// Main method. It returns an exception in case the program syntax is not correct.
+	public static void main(String[] args)throws ParseException {
+	  
+		try {
+
+			// Parser creation
+			Parser parser = new Parser(System.in);
+
+			// Main method of the parser
+			parser.program();
+
+			// Parser check block. This block checks the correct nodes declarations.
+			if(check) {
+			  System.out.println("El programa ingresado es valido.");
+			  }else {
+			    System.out.println("El programa ingresado no es valido.");
+			    }
+
+		}
+		
+		catch(ParseException e) {
+		  
+		  System.out.println(e.getMessage());
+		  System.out.println("El programa ingresado no es valido.");
+		  
+		}
+		
+	}
+	
+}
+
+PARSER_END(Parser)
+
+//Tokens definitions.
+TOKEN:
+{
+
+  // Reserved words.
+  < TREE: "TREE" > { System.out.println("TREE - > " + image); }
+  | < NODES: "NODES" > { System.out.println("NODES - > " + image); }
+
+  // Group characters.
+  | < LPAREN: "(" > { System.out.println("LPAREN - > " + image); }
+  | < RPAREN: ")" > { System.out.println("RPAREN - > " + image); }
+  | < MINOR: "<" > { System.out.println("MINOR - > " + image); }
+  | < MAJOR: ">" > { System.out.println("MAJOR - > " + image); }
+
+  // Separators characters.
+  | < COLON: ":" > { System.out.println("COLON - > " + image); }
+  | < SEMICOLON: ";" > { System.out.println("SEMICOLON - > " + image); }
+  | < COMMA: "," > { System.out.println("COMMA - > " + image); }
+
+  // Declaration syntax.
+  | < NODEIDENTIFIER: ("$") ("NULL" | (["0"-"9"])+) > {
+    													System.out.println("NODE IDENTIFIER - > " + image);
+  														Parser.nodeCount++;
+  													}
+  | < STRING: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z"])* > { System.out.println("STRING - > " + image); }
+  | < NUMBER : (["0"-"9"])+ > { System.out.println("NUMBER - > " + image); }
+  
+
+}
+
+// Skip characters.
+SKIP:
+{
+  
+  " "
+  | "\r"
+  | "\n"
+  | "\t"
+  
+}
+
+// General program structure.
+void program():
+{}
+{
+  < TREE > < LPAREN > treeDescription() < RPAREN > < EOF >
+}
+
+// General tree description.
+void treeDescription():
+{}
+{
+  < STRING > < SEMICOLON > nodeList()
+}
+
+// Node list structure.
+void nodeList():
+{}
+{
+  <  NODES > < LPAREN > (node())+ < RPAREN >
+}
+
+// Node structure. The parser check if the node identifier was already declared as son of other
+// node, less the first node (the root node). Also, the nodes declared as sons are added to the
+// nodes list.
+void node():
+{}
+{
+  < NODEIDENTIFIER > {
+    					if(Parser.nodeCount > 1) {
+										if(!Parser.nodes.contains(token.image)) {
+												Parser.check = false;
+											}						
+    									}
+    				}< COLON > < NODEIDENTIFIER > { Parser.nodes.add(token.image.toString()); } < COLON > < NODEIDENTIFIER > { Parser.nodes.add(token.image.toString()); }  (< COLON > (nodeProperty())+)? (< COMMA >)?
+}
+
+// Node property structure
+void nodeProperty():
+{}
+{
+  < MINOR > < STRING > < COMMA > < NUMBER > < MAJOR > (< COMMA >)?
+}
