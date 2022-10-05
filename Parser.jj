@@ -26,9 +26,9 @@ class Parser {
 
 			// Parser check block. This block checks the correct nodes declarations.
 			if(check) {
-			  System.out.println("El programa ingresado es valido.");
+			  System.out.println("The input program is valid.");
 			  }else {
-			    System.out.println("El programa ingresado no es valido.");
+			    System.out.println("The input program is not valid.");
 			    }
 
 		}
@@ -36,7 +36,7 @@ class Parser {
 		catch(ParseException e) {
 		  
 		  System.out.println(e.getMessage());
-		  System.out.println("El programa ingresado no es valido.");
+		  System.out.println("The input program is not valid.");
 		  
 		}
 		
