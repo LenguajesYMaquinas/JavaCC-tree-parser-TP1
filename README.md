@@ -19,10 +19,6 @@ This program is a parser for a tree structure defined with the sytax described i
 
   The other files are created in the execution of the program and if the [Parser.jj](/Parser.jj) file change, the others change too.
 
-## Context
-
-This [document](/documentation/statement.pdf) contains the context of the problem, requirments and functionality for each file and function.
-
 ## Objectives
 
 This project aims to apply the following functionalities:
